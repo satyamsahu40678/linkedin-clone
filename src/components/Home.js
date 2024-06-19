@@ -2,8 +2,19 @@ import styled from "styled-components";
 import LeftSide from "./LeftSide";
 import Middle from "./Middle";
 import RightSide from "./RightSide";
+import { connect } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Home = (props) => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!props.user) {
+            navigate('/');
+        }
+    }, [!props.user, navigate]);
+
     return (
         <Container>
             <Section>
@@ -83,5 +94,10 @@ const Layout = styled.div`
     }
 `;
 
+const mapStateToProps = (state) => {
+    return {
+        user: state.userState.user,
+    };
+};
 
-export default Home;
+export default connect(mapStateToProps)(Home);

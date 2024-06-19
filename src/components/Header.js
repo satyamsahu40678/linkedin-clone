@@ -1,5 +1,6 @@
+import { connect } from "react-redux";
 import styled from "styled-components";
-
+import { signOutAPI } from "../actions";
 
 const Header = (props) => {
     return (
@@ -56,11 +57,15 @@ const Header = (props) => {
 
                     <User>
                         <a>
-                            <img src="/images/user.svg" alt="" />
-                            <span>Me</span>
+                            {
+                                props.user && props.user.photoURL ? (<img src={props.user.photoURL} alt="" />) :
+                                    (<img src="/images/user.svg" alt="" />)
+                            }
+                            <span>Me
                             <img src="/images/down-icon.svg" alt="" className="down" />
+                            </span>
                         </a>
-                        <SignOut>
+                        <SignOut onClick={() => props.signOut()}>
                             <a>
                                 Sign Out
                             </a>
@@ -70,8 +75,9 @@ const Header = (props) => {
                     <Work>
                         <a>
                             <img src="/images/nav-work.svg" alt="" />
-                            <span>Work</span>
+                            <span>Work
                             <img src="/images/down-icon.svg" alt="" className="down" />
+                            </span>
                         </a>
                     </Work>
                 </NavListWrap></Nav>
@@ -226,22 +232,36 @@ const SignOut = styled.div`
     transition-duration: 160ms;
     text-align: center;
     display: none;
+    cursor: pointer;
+    &:hover{
+        color: rgba(0,0,0,0.5);
+    }
+
+    @media (max-width: 768px) {
+        top: -35px; /* Adjust this value as needed */
+        width: 80px;
+        justify-content: center;
+        height: 35px;
+        background: white;
+        border-radius: 5px 5px 0 0;
+    }
+    
 `;
 
 const User = styled(NavList)`
     img.down{
-        height: 10px;
+        height: 12px;
     }
     a > svg{
         width: 10px;
         border-radius: 50%;
     }
-
+    padding-top: 1px;
     a > img{
-        width: 22px;
+        width: 24px;
         /* padding: -2px; */
 
-        height: 22px;
+        height: 24px;
         border-radius: 50%;
     }
 
@@ -258,12 +278,28 @@ const User = styled(NavList)`
             justify-content: center;
         }
     }
+
+    @media (max-width: 768px) {
+        ${SignOut} {
+            display: flexbox;
+            /* transition: 0.5ms ease-in; */
+        }
+    }
 `;
 
 const Work = styled(User)`
     border-left: 1px solid rgba(0,0,0,0.1);
 `;
 
+const mapStateToProps = (state) => {
+    return {
+        user: state.userState.user,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    signOut: () => dispatch(signOutAPI()),
+});
 
 
-export default Header;
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

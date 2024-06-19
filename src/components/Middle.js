@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import PostModal from './PostModal';
 
 const Middle = (props) => {
     return <Container>
@@ -91,6 +92,7 @@ const Middle = (props) => {
                 </SocialActions>
             </Article>
         </div>
+        <PostModal />
     </Container>
 };
 
