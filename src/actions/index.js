@@ -2,12 +2,17 @@ import { auth, provider, storage } from "../firebase";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { signInWithPopup } from "firebase/auth";
-import { SET_USER } from "./actionType";
+import { SET_USER, SET_LOADING_STATUS } from "./actionType";
 import db from "../firebase";
 
 export const setUser = (payload) => ({
     type: SET_USER,
     user: payload,
+});
+
+export const setLoading = (status) => ({
+    type: SET_LOADING_STATUS,
+    status: status,
 })
 
 export function signInAPI() {
@@ -49,6 +54,9 @@ export function signOutAPI() {
 
 export function postArticleAPI(payload) {
     return async (dispatch) => {
+
+        dispatch(setLoading(true));
+
         if (payload.image !== '') {
             const storageRef = ref(getStorage(), `images/${payload.image.name}`);
             const uploadTask = uploadBytesResumable(storageRef, payload.image);
@@ -74,10 +82,12 @@ export function postArticleAPI(payload) {
                         comments: 0,
                         description: payload.description,
                     });
+                    dispatch(setLoading(false));
                 }
             );
         }
         else if(payload.video){
+            dispatch(setLoading(true));
             await addDoc(collection(db, "articles"), {
                 actor: {
                     description: payload.user.email,
@@ -90,6 +100,7 @@ export function postArticleAPI(payload) {
                 comments: 0,
                 description: payload.description,
             });
+            dispatch(setLoading(false));
         }
     };
 }

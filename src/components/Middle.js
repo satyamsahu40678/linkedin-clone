@@ -1,17 +1,18 @@
 import { useState } from "react";
 import styled from "styled-components";
 import PostModel from "./PostModel";
+import { connect } from "react-redux";
 
 const Middle = (props) => {
     const [showModel, setShowModel] = useState("closed");
 
     const handleClick = (e) => {
         e.preventDefault();
-        if(e.target !== e.currentTarget) {
+        if (e.target !== e.currentTarget) {
             return;
         }
 
-        switch(showModel) {
+        switch (showModel) {
             case "open":
                 setShowModel("close");
                 break;
@@ -24,12 +25,17 @@ const Middle = (props) => {
         }
     };
 
-    return <Container>
+    return (<Container>
         <ShareBox>
-
             <div>
-                <img src="/images/user.svg" alt="" />
-                <button onClick={handleClick}>Start a post</button>
+                {props.user && props.user.photoURL ? (
+                    <img src={props.user.photoURL} alt="" />
+                ) : (
+
+                    <img src="/images/user.svg" alt="" />
+                )}
+                <button onClick={handleClick}
+                    disabled={props.loading ? true : false}>Start a post</button>
             </div>
             <div>
                 <button>
@@ -50,7 +56,10 @@ const Middle = (props) => {
                 </button>
             </div>
         </ShareBox>
-        <div>
+        <Content>
+            {
+                props.loading && <img src="/images/spin-loader.svg" alt="" />
+            }
             <Article>
                 <SharedActor>
                     <a>
@@ -113,9 +122,11 @@ const Middle = (props) => {
                     </button>
                 </SocialActions>
             </Article>
-        </div>
+        </Content>
+
         <PostModel showModel={showModel} handleClick={handleClick} />
     </Container>
+    )
 };
 
 
@@ -336,4 +347,24 @@ const SocialActions = styled.div`
     }
 `;
 
-export default Middle;
+const Content = styled.div`
+    text-align: center;
+    & > img {
+        width: 70px;
+    }
+`;
+
+const mapStateToProps = (state) => {
+    return {
+        loading: state.articleState.loading,
+        user: state.userState.user,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+
+});
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Middle);
