@@ -31,8 +31,6 @@ const Middle = (props) => {
                 break;
         }
     };
-
-    const formattedDate = props.actor && props.actor.date ? props.actor.date.toLocaleDateString() : 'Date not available';
     return (
         <>
             {
@@ -88,7 +86,7 @@ const Middle = (props) => {
                                                     {article.actor.description}
                                                 </span>
                                                 <span>
-                                                {formattedDate}
+                                                {article.actor.date ? article.actor.date.toDate().toLocaleDateString() : 'Date not available'}
                                                 </span>
                                             </div>
                                         </a>

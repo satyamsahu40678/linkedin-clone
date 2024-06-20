@@ -120,17 +120,8 @@ export function getArticlesAPI() {
         const articlesQuery = query(articlesRef, orderBy("actor.date", "desc"));
 
         onSnapshot(articlesQuery, (snapshot) => {
-            const payload = snapshot.docs.map((doc) => {
-                const data = doc.data();
-                // Convert Firestore timestamp to JavaScript Date
-                if (data.actor && data.actor.date && data.actor.date.toDate) {
-                    data.actor.date = data.actor.date.toDate();
-                } else {
-                    data.actor = { ...data.actor, date: null }; // Handle missing date
-                }
-                return data;
-            });
-            console.log(payload);
+            const payload = snapshot.docs.map((doc) => doc.data());
+            // console.log(payload);
             // Dispatch the payload to the Redux store here if needed
             // dispatch({ type: 'SET_ARTICLES', payload });
             dispatch(getArticles(payload));
