@@ -2,7 +2,7 @@ import { auth, provider, storage } from "../firebase";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { signInWithPopup } from "firebase/auth";
-import { SET_USER, SET_LOADING_STATUS } from "./actionType";
+import { SET_USER, SET_LOADING_STATUS, GET_ARTICLES } from "./actionType";
 import db from "../firebase";
 import { query, orderBy, onSnapshot } from "firebase/firestore";
 
@@ -14,7 +14,13 @@ export const setUser = (payload) => ({
 export const setLoading = (status) => ({
     type: SET_LOADING_STATUS,
     status: status,
-})
+});
+
+export const getArticles = (payload) => (
+    {
+    type: GET_ARTICLES,
+    payload: payload,
+});
 
 export function signInAPI() {
     return (dispatch) => {
@@ -114,10 +120,20 @@ export function getArticlesAPI() {
         const articlesQuery = query(articlesRef, orderBy("actor.date", "desc"));
 
         onSnapshot(articlesQuery, (snapshot) => {
-            const payload = snapshot.docs.map((doc) => doc.data());
+            const payload = snapshot.docs.map((doc) => {
+                const data = doc.data();
+                // Convert Firestore timestamp to JavaScript Date
+                if (data.actor && data.actor.date && data.actor.date.toDate) {
+                    data.actor.date = data.actor.date.toDate();
+                } else {
+                    data.actor = { ...data.actor, date: null }; // Handle missing date
+                }
+                return data;
+            });
             console.log(payload);
             // Dispatch the payload to the Redux store here if needed
             // dispatch({ type: 'SET_ARTICLES', payload });
+            dispatch(getArticles(payload));
         });
     };
 }
