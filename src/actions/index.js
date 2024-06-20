@@ -4,6 +4,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { signInWithPopup } from "firebase/auth";
 import { SET_USER, SET_LOADING_STATUS } from "./actionType";
 import db from "../firebase";
+import { query, orderBy, onSnapshot } from "firebase/firestore";
 
 export const setUser = (payload) => ({
     type: SET_USER,
@@ -102,5 +103,21 @@ export function postArticleAPI(payload) {
             });
             dispatch(setLoading(false));
         }
+    };
+}
+
+
+export function getArticlesAPI() {
+    return (dispatch) => {
+        const db = getFirestore();
+        const articlesRef = collection(db, "articles");
+        const articlesQuery = query(articlesRef, orderBy("actor.date", "desc"));
+
+        onSnapshot(articlesQuery, (snapshot) => {
+            const payload = snapshot.docs.map((doc) => doc.data());
+            console.log(payload);
+            // Dispatch the payload to the Redux store here if needed
+            // dispatch({ type: 'SET_ARTICLES', payload });
+        });
     };
 }

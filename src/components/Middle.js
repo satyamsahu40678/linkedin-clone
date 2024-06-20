@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { getArticlesAPI } from "../actions";
 import { useState } from "react";
 import styled from "styled-components";
 import PostModel from "./PostModel";
@@ -5,6 +7,10 @@ import { connect } from "react-redux";
 
 const Middle = (props) => {
     const [showModel, setShowModel] = useState("closed");
+
+    useEffect(() => {
+        props.getArticles();
+    }, [])
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -362,7 +368,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-
+    getArticles: () => dispatch(getArticlesAPI()),
 });
 
 
