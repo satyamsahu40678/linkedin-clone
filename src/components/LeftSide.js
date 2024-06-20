@@ -49,9 +49,9 @@ const LeftSide = (props) => {
                 </span>
             </a>
             <a>
-                <spna>
+                <span>
                     Discover More
-                </spna>
+                </span>
             </a>
         </CommunityCard>
     </Container>
