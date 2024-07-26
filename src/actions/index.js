@@ -1,5 +1,5 @@
 import { auth, provider, storage } from "../firebase";
-import { getFirestore, collection, addDoc, doc, deleteDoc, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, deleteDoc, where, getDocs, writeBatch } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { signInWithPopup } from "firebase/auth";
 import { SET_USER, SET_LOADING_STATUS, GET_ARTICLES, DELETE_ARTICLE } from "./actionType";
@@ -129,17 +129,22 @@ export function getArticlesAPI() {
     };
 }
 
-export const deleteArticle = (sharedImg, video) => async (dispatch) => {
+
+export const deleteArticle = (article) => async (dispatch) => {
+    console.log("Article to delete:", article);
+    console.log("Shared Image:", article.sharedImg);
+    console.log("Video:", article.video);
+
     const db = getFirestore();
 
     try {
         const articlesRef = collection(db, "articles");
         let q;
 
-        if (sharedImg) {
-            q = query(articlesRef, where("sharedImg", "==", sharedImg));
-        } else if (video) {
-            q = query(articlesRef, where("video", "==", video));
+        if (article.sharedImg) {
+            q = query(articlesRef, where("sharedImg", "==", article.sharedImg));
+        } else if (article.video) {
+            q = query(articlesRef, where("video", "==", article.video));
         } else {
             console.error("No identifier provided for deletion.");
             return;
@@ -150,15 +155,19 @@ export const deleteArticle = (sharedImg, video) => async (dispatch) => {
         if (querySnapshot.empty) {
             console.log("No matching documents found.");
         } else {
-            querySnapshot.forEach(async (doc) => {
-                await deleteDoc(doc.ref);
-                // console.log("Document successfully deleted.");
+            const batch = writeBatch(db);
+            querySnapshot.forEach((doc) => {
+                batch.delete(doc.ref);
             });
-            dispatch({ type: DELETE_ARTICLE, payload: { sharedImg, video } });
+
+            await batch.commit();
+
+            dispatch({ 
+                type: DELETE_ARTICLE, 
+                payload: { sharedImg: article.sharedImg, video: article.video } 
+            });
         }
     } catch (error) {
         console.error("Error deleting article: ", error);
     }
 };
-
-

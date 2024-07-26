@@ -47,11 +47,8 @@ const Middle = (props) => {
 
     const handleDelete = (e, article) => {
         e.preventDefault();
-        // Assuming `sharedImg` is the identifier for deletion
-        props.deleteArticle(article.sharedImg, "", article.video);
+        props.deleteArticle(article);
     };
-    
-
 
 
     return (
@@ -117,8 +114,6 @@ const Middle = (props) => {
                                         <Delete onClick={(e) => handleDelete(e, article)}>
                                             <img src="/images/delete-icon.svg" alt="Delete" />
                                         </Delete>
-
-
                                     </SharedActor>
                                     <Description>
                                         {article.description}

@@ -21,8 +21,16 @@ const articleReducer = (state = initState, action) => {
         case DELETE_ARTICLE:
             return {
                 ...state,
-                articles: state.articles.filter(article => article.actor.image !== action.payload.image),
+                articles: state.articles.filter(article => {
+                    if (action.payload.sharedImg) {
+                        return article.sharedImg !== action.payload.sharedImg;
+                    } else if (action.payload.video) {
+                        return article.video !== action.payload.video;
+                    }
+                    return true;
+                }),
             };
+
         default:
             return state;
     }
