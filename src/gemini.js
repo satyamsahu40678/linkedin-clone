@@ -21,8 +21,6 @@ import {
   export async function run(prompt) {
     const chatSession = model.startChat({
       generationConfig,
-      // Adjust safetySettings if necessary
-      // See https://ai.google.dev/gemini-api/docs/safety-settings
       history: [],
     });
   

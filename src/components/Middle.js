@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { getArticlesAPI } from "../actions";
+import { deleteArticle } from "../actions";
 import { useState } from "react";
 import styled from "styled-components";
 import PostModel from "./PostModel";
@@ -9,6 +10,7 @@ import Gemini from "./Gemini";
 
 const Middle = (props) => {
     const [showModel, setShowModel] = useState("closed");
+    // const [articleToDelete, setArticleToDelete] = useState(null);
 
     useEffect(() => {
         props.getArticles();
@@ -41,6 +43,14 @@ const Middle = (props) => {
             [articleId]: !prevLikes[articleId],
         }));
     };
+
+
+    const handleDelete = (e, article) => {
+        e.preventDefault();
+        // Assuming `sharedImg` is the identifier for deletion
+        props.deleteArticle(article.sharedImg, "", article.video);
+    };
+    
 
 
 
@@ -104,9 +114,10 @@ const Middle = (props) => {
                                                 </span>
                                             </div>
                                         </a>
-                                        <button>
-                                            <img src="/images/ellipsis.svg" alt="" />
-                                        </button>
+                                        <Delete onClick={(e) => handleDelete(e, article)}>
+                                            <img src="/images/delete-icon.svg" alt="Delete" />
+                                        </Delete>
+
 
                                     </SharedActor>
                                     <Description>
@@ -177,6 +188,15 @@ const Middle = (props) => {
 const Container = styled.div`
     grid-area: middle;
 `;
+
+const Delete = styled.div`
+    padding: 10px;
+    
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
 
 const CommonCard = styled.div`
     text-align: center;
@@ -422,6 +442,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     getArticles: () => dispatch(getArticlesAPI()),
+    deleteArticle: (articleId) => dispatch(deleteArticle(articleId)),
 });
 
 

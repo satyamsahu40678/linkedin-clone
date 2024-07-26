@@ -25,7 +25,7 @@ const Gemini = (props) => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything!"
+            placeholder="Ask Your Job and Profile Related Queries!"
             onKeyDown={handleKeyDown} 
           />
           <button onClick={handleAskGemini}>Ask Gemini</button>
