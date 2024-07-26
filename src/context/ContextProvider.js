@@ -4,72 +4,108 @@ import { run } from "../gemini";
 export const Context = createContext();
 
 const ContextProvider = (props) => {
-  const [input, setInput] = useState("");
-  const [recentPrompt, setRecentPrompt] = useState("");
-  const [prevPrompts, setPrevPrompts] = useState([]);
-  const [showResult, setShowResult] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState("");
+    const [input, setInput] = useState("");
+    const [recentPrompt, setRecentPrompt] = useState("");
+    const [prevPrompts, setPrevPrompts] = useState([]);
+    const [showResult, setShowResult] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [resultData, setResultData] = useState("");
 
-  const delayPara = (index, nextWord) => {
-    setTimeout(() => {
-      setResultData((prev) => prev + nextWord);
-    }, 75 * index);
-  };
+    // Delay display of each word for animation
+    const delayPara = (index, nextWord) => {
+        setTimeout(function () {
+            setResultData((prev) => prev + nextWord);
+        }, 75 * index);
+    };
 
-  const newChat = () => {
-    setLoading(false);
-    setShowResult(false);
-  };
+    // Reset the chat
+    const newChat = () => {
+        setLoading(false);
+        setShowResult(false);
+    };
 
-  const onSent = async (prompt) => {
-    setResultData("");
-    setLoading(true);
-    setShowResult(true);
+    // Format response to handle headers, bold, italic, new lines, lists, blockquotes, and code blocks
+    const formatResponse = (response) => {
+        // Handle bold text
+        let responseArray = response.split("**");
+        let formattedResponse = "";
+        for (let i = 0; i < responseArray.length; i++) {
+            if (i === 0 || i % 2 !== 1) {
+                formattedResponse += responseArray[i];
+            } else {
+                formattedResponse += "<b>" + responseArray[i] + "</b>";
+            }
+        }
 
-    let response;
-    if (prompt !== undefined) {
-      response = await run(prompt);
-      setRecentPrompt(prompt);
-    } else {
-      setPrevPrompts((prev) => [...prev, input]);
-      setRecentPrompt(input);
-      response = await run(input);
-    }
+        // Handle italic text
+        formattedResponse = formattedResponse.split("*").join("<i>");
+        formattedResponse = formattedResponse.split("*/").join("</i>");
 
-    let responseArray = response.split("**");
-    let newResponse = responseArray.map((part, i) => 
-      i % 2 === 1 ? `<b>${part}</b>` : part
-    ).join("");
-    let newResponse2 = newResponse.split("*").join("<br>");
-    let newResponseArray = newResponse2.split(" ");
+        // Handle blockquotes
+        formattedResponse = formattedResponse.replace(/```(.*?)```/gs, "<blockquote>$1</blockquote>");
 
-    for (let i = 0; i < newResponseArray.length; i++) {
-      const nextWord = newResponseArray[i];
-      delayPara(i, nextWord + " ");
-    }
+        // Handle code blocks
+        formattedResponse = formattedResponse.replace(/`([^`]+)`/g, "<code>$1</code>");
 
-    setLoading(false);
-    setInput("");
-  };
+        // Handle headers
+        formattedResponse = formattedResponse.replace(/## (.*?) ##/g, "<h2>$1</h2><br>");
 
-  const contextValue = {
-    prevPrompts,
-    setPrevPrompts,
-    onSent,
-    setRecentPrompt,
-    recentPrompt,
-    showResult,
-    loading,
-    resultData,
-    input,
-    setInput,
-    newChat,
-  };
+        // Handle lists
+        formattedResponse = formattedResponse.replace(/- (.*?)\n/g, "<ul><li>$1</li></ul>");
 
-  return (
-    <Context.Provider value={contextValue}>{props.children}</Context.Provider>
-  );
+        // Replace new lines with <br> tags
+        formattedResponse = formattedResponse.replace(/\n/g, "<br>");
+
+        // Merge consecutive <ul> tags
+        formattedResponse = formattedResponse.replace(/<\/ul><ul>/g, "");
+
+        return formattedResponse;
+    };
+
+    const onSent = async (prompt) => {
+        setResultData("");
+        setLoading(true);
+        setShowResult(true);
+        let response;
+        if (prompt !== undefined) {
+            response = await run(prompt);
+            setRecentPrompt(prompt);
+        } else {
+            setPrevPrompts((prev) => [...prev, input]);
+            setRecentPrompt(input);
+            response = await run(input);
+        }
+
+        let formattedResponse = formatResponse(response);
+
+        // Display the formatted response word by word
+        let responseArray = formattedResponse.split(" ");
+        for (let i = 0; i < responseArray.length; i++) {
+            const nextWord = responseArray[i];
+            delayPara(i, nextWord + " ");
+        }
+
+        setLoading(false);
+        setInput("");
+    };
+
+    const contextValue = {
+        prevPrompts,
+        setPrevPrompts,
+        onSent,
+        setRecentPrompt,
+        recentPrompt,
+        showResult,
+        loading,
+        resultData,
+        input,
+        setInput,
+        newChat
+    };
+
+    return (
+        <Context.Provider value={contextValue}>{props.children}</Context.Provider>
+    );
 };
 
 export default ContextProvider;

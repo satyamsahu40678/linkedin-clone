@@ -1,17 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import run from "../gemini";
+import { Context } from "../context/ContextProvider";
 
 const Gemini = (props) => {
-  const [query, setQuery] = useState("");
-  const [response, setResponse] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { input, setInput, onSent, loading, resultData } = useContext(Context);
 
   const handleAskGemini = async () => {
-    setLoading(true);
-    const result = await run(query);
-    setResponse(result);
-    setLoading(false);
+    await onSent(input);
   };
 
   return (
@@ -21,8 +16,8 @@ const Gemini = (props) => {
           {props.user && <img src={props.user.photoURL} alt="User" />}
           <input
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Ask me anything!"
           />
           <button onClick={handleAskGemini}>Ask Gemini</button>
@@ -31,7 +26,7 @@ const Gemini = (props) => {
           {loading ? (
             <Loader>Loading...</Loader>
           ) : (
-            response && <p>{response}</p>
+            resultData && <p dangerouslySetInnerHTML={{ __html: resultData }} />
           )}
         </ResponseSection>
       </AskGemini>
@@ -93,15 +88,44 @@ const QuerySection = styled.div`
 const ResponseSection = styled.div`
   p {
     margin: 0;
-    padding: 16px;
-    background: #f3f2ef;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px;
+    background: #fff;
     border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.5;
+    background: linear-gradient(90deg, #0073b1, #af4261);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  
+
+  @keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes blink-caret {
+    from,
+    to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: orange;
+    }
   }
 `;
 
 const Loader = styled.div`
   font-size: 14px;
   color: #0073b1;
+  
 `;
 
 export default Gemini;
