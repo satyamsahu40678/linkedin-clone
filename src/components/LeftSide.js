@@ -2,61 +2,57 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 
 const LeftSide = (props) => {
-    return <Container>
-        <ArtCard>
-            <UserInfo>
-                <CardBackground />
-                <a>
-                    <Photo />
-                    <Link>Welcome, {props.user ? props.user.displayName : "there"}!</Link>
-                </a>
-                <a>
-                    <AddPhotoText>Add a photo</AddPhotoText>
-                </a>
-            </UserInfo>
-            <Widget>
-                <a>
-                    <div>
-                        <span>Connections</span>
-                        <span>Grow your network</span>
-                    </div>
-                    <img src="/images/widget-icon.svg" alt="" />
-                </a>
-            </Widget>
-            <Item>
-                <span>
-                    <img src="/images/item-icon.svg" alt="" />
-                    My Item
-                </span>
-            </Item>
-        </ArtCard>
+    const backgroundImage = props.user && props.user.photoURL ? props.user.photoURL : "/images/user.svg";
+    return (
+        <Container>
+            <ArtCard>
+                <UserInfo>
+                    <CardBackground />
+                    <a>
+                        <Photo backgroundImage={backgroundImage} />
+                        <Link>Welcome, {props.user ? props.user.displayName : "there"}!</Link>
+                    </a>
+                    <a>
+                        <AddPhotoText>Add a photo</AddPhotoText>
+                    </a>
+                </UserInfo>
+                <Widget>
+                    <a>
+                        <div>
+                            <span>Connections</span>
+                            <span>Grow your network</span>
+                        </div>
+                        <img src="/images/widget-icon.svg" alt="" />
+                    </a>
+                </Widget>
+                <Item>
+                    <span>
+                        <img src="/images/item-icon.svg" alt="" />
+                        My Item
+                    </span>
+                </Item>
+            </ArtCard>
 
-        <CommunityCard>
-            <a>
-                <span>
-                    Groups
-                </span>
-            </a>
-            <a>
-                <span>
-                    Events
-                    <img src="/images/plus-icon.svg" alt="" />
-                </span>
-            </a>
-            <a>
-                <span>
-                    Follow Hashtags
-                </span>
-            </a>
-            <a>
-                <span>
-                    Discover More
-                </span>
-            </a>
-        </CommunityCard>
-    </Container>
+            <CommunityCard>
+                <a>
+                    <span>Groups</span>
+                </a>
+                <a>
+                    <span>
+                        Events
+                        <img src="/images/plus-icon.svg" alt="" />
+                    </span>
+                </a>
+                <a>
+                    <span>Follow Hashtags</span>
+                </a>
+                <a>
+                    <span>Discover More</span>
+                </a>
+            </CommunityCard>
+        </Container>
+    );
 };
-
 
 const Container = styled.div`
     grid-area: leftside;
@@ -90,16 +86,16 @@ const CardBackground = styled.div`
 
 const Photo = styled.div`
     box-shadow: none;
-    background-image: url("/images/photo.svg");
-    width: 72px;
-    height: 72px;
+    background-image: url(${props => props.backgroundImage});
+    width: 100px;
+    height: 80px;
     box-sizing: border-box;
-    background-clip: content-box;
-    background-color: white;
+    /* background-clip: content-box; */
+    /* background-color: white; */
     background-position: center;
-    background-size: 60%;
+    background-size: 70%;
     background-repeat: no-repeat;
-    border: 2px solid white;
+    /* border: 2px solid white; */
     margin: -38px auto 12px;
     border-radius: 50%;
 `;

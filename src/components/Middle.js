@@ -31,6 +31,18 @@ const Middle = (props) => {
                 break;
         }
     };
+
+    const [likedArticles, setLikedArticles] = useState({});
+
+    const handleLike = (articleId) => {
+        setLikedArticles((prevLikes) => ({
+            ...prevLikes,
+            [articleId]: !prevLikes[articleId],
+        }));
+    };
+
+
+
     return (
         <>
             {
@@ -86,7 +98,7 @@ const Middle = (props) => {
                                                     {article.actor.description}
                                                 </span>
                                                 <span>
-                                                {article.actor.date ? article.actor.date.toDate().toLocaleDateString() : 'Date not available'}
+                                                    {article.actor.date ? article.actor.date.toDate().toLocaleDateString() : 'Date not available'}
                                                 </span>
                                             </div>
                                         </a>
@@ -127,8 +139,12 @@ const Middle = (props) => {
                                         </li>
                                     </SocialCounts>
                                     <SocialActions>
-                                        <button>
-                                            <img src="/images/like-icon.svg" alt="" />
+                                        <button onClick={() => handleLike(article.id)}>
+                                            {likedArticles[article.id] ? (
+                                                <img src="/images/like-icon-click.svg" alt="Liked" />
+                                            ) : (
+                                                <img src="/images/like-icon.svg" alt="Like" />
+                                            )}
                                             <span>Like</span>
                                         </button>
                                         <button>
@@ -350,8 +366,13 @@ const SocialActions = styled.div`
     min-height: 40px;
     padding: 4px 8px;
     margin-left: 4px;
+    margin-right: 4px;
     justify-content: space-around;
+    /* @media(min-width: 768px){
+            width: 50px;
+        } */
     button{
+        /* display: flex; */
         align-items: center;
         justify-content: center;
         border-radius: 10px;
@@ -367,8 +388,17 @@ const SocialActions = styled.div`
         }
         @media(min-width: 768px){
             span{
-                margin-left: 8px;
+                margin-left: px;
             }
+            /* display: flex;
+            object-fit: contain; */
+            /* overflow: hidden; */
+        }
+        &:hover{
+            cursor: pointer;
+            color: white;
+            background-color: rgba(0,0,0,0.6);
+            transition: ease 0.2s ;
         }
     }
 `;
