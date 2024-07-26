@@ -10,6 +10,7 @@ const ContextProvider = (props) => {
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
+    const [queryAndResponse, setQueryAndResponse] = useState({});
 
     // Delay display of each word for animation
     const delayPara = (index, nextWord) => {
@@ -26,6 +27,9 @@ const ContextProvider = (props) => {
 
     // Format response to handle headers, bold, italic, new lines, lists, blockquotes, and code blocks
     const formatResponse = (response) => {
+        // Handle headers
+        response = response.replace(/##(.*?)##/g, "<h2>$1</h2><br>");
+
         // Handle bold text
         let responseArray = response.split("**");
         let formattedResponse = "";
@@ -46,9 +50,6 @@ const ContextProvider = (props) => {
 
         // Handle code blocks
         formattedResponse = formattedResponse.replace(/`([^`]+)`/g, "<code>$1</code>");
-
-        // Handle headers
-        formattedResponse = formattedResponse.replace(/## (.*?) ##/g, "<h2>$1</h2><br>");
 
         // Handle lists
         formattedResponse = formattedResponse.replace(/- (.*?)\n/g, "<ul><li>$1</li></ul>");
@@ -85,6 +86,8 @@ const ContextProvider = (props) => {
             delayPara(i, nextWord + " ");
         }
 
+        setQueryAndResponse({ query: input || prompt, response: formattedResponse });
+
         setLoading(false);
         setInput("");
     };
@@ -100,7 +103,8 @@ const ContextProvider = (props) => {
         resultData,
         input,
         setInput,
-        newChat
+        newChat,
+        queryAndResponse
     };
 
     return (
