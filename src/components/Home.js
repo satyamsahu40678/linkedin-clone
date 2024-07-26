@@ -23,7 +23,8 @@ const Home = (props) => {
                         Are you hiring? -  
                     </a>
                 </h5>
-                    <p>- Find talented/non-talented people here. And give them high salary please.</p>
+                    
+                <p>- Find talented/non-talented people here. And give them high salary please.</p>
             </Section>
             <Layout>
                 <LeftSide />

@@ -10,22 +10,21 @@ const ContextProvider = (props) => {
     const [showResult, setShowResult] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resultData, setResultData] = useState("");
-    const [queryAndResponse, setQueryAndResponse] = useState({});
+    const [queryAndResponse, setQueryAndResponse] = useState({ query: "", response: "" });
 
-    // Delay display of each word for animation
     const delayPara = (index, nextWord) => {
         setTimeout(function () {
             setResultData((prev) => prev + nextWord);
         }, 75 * index);
     };
 
-    // Reset the chat
     const newChat = () => {
         setLoading(false);
         setShowResult(false);
+        setResultData("");
+        setQueryAndResponse({ query: "", response: "" });
     };
 
-    // Format response to handle headers, bold, italic, new lines, lists, blockquotes, and code blocks
     const formatResponse = (response) => {
         // Handle headers
         response = response.replace(/##(.*?)##/g, "<h2>$1</h2><br>");
@@ -79,14 +78,15 @@ const ContextProvider = (props) => {
 
         let formattedResponse = formatResponse(response);
 
+        // Store query and response
+        setQueryAndResponse({ query: input || prompt, response: formattedResponse });
+
         // Display the formatted response word by word
         let responseArray = formattedResponse.split(" ");
         for (let i = 0; i < responseArray.length; i++) {
             const nextWord = responseArray[i];
             delayPara(i, nextWord + " ");
         }
-
-        setQueryAndResponse({ query: input || prompt, response: formattedResponse });
 
         setLoading(false);
         setInput("");
