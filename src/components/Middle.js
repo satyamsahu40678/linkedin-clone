@@ -5,6 +5,7 @@ import styled from "styled-components";
 import PostModel from "./PostModel";
 import { connect } from "react-redux";
 import ReactPlayer from "react-player";
+import Gemini from "./Gemini";
 
 const Middle = (props) => {
     const [showModel, setShowModel] = useState("closed");
@@ -50,6 +51,7 @@ const Middle = (props) => {
                     <p>There are no articles yet!</p>
                 ) : (
                     <Container>
+                        <Gemini />
                         <ShareBox>
                             <div>
                                 {props.user && props.user.photoURL ? (
