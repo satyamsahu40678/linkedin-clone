@@ -3,12 +3,15 @@ import styled from "styled-components";
 import { Context } from "../context/ContextProvider";
 
 const Gemini = (props) => {
+  //queries from context that are degined
   const { input, setInput, onSent, loading, queryAndResponse, resultData } = useContext(Context);
 
+  //function to handle ask function
   const handleAskGemini = async () => {
     await onSent(input);
   };
 
+  //click action
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();

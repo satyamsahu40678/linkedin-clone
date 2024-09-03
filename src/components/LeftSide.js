@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import styled from "styled-components";
 
+//left component box
 const LeftSide = (props) => {
     const backgroundImage = props.user && props.user.photoURL ? props.user.photoURL : "/images/user.svg";
     return (

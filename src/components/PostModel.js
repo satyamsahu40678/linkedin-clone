@@ -5,11 +5,14 @@ import { connect } from "react-redux";
 import { postArticleAPI } from "../actions";
 import { getFirestore, serverTimestamp } from "firebase/firestore";
 
+
+// creating the post model to show the post that are being stored in the database and also the interactive box to made post
 const PostModel = (props) => {
     const [editorText, setEditorText] = useState("");
     const [shareImage, setShareImage] = useState("");
     const [videoLink, setVideoLink] = useState("");
     const [assetArea, setAssetArea] = useState("");
+
 
     const handleChange = (e) => {
         const image = e.target.files[0];
@@ -45,6 +48,7 @@ const PostModel = (props) => {
         reset(e);
     };
 
+    //reseting the post editor
     const reset = (e) => {
         setEditorText("");
         setShareImage("");

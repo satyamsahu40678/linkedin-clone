@@ -1,3 +1,5 @@
+//configuration of the gemini api
+
 import {
     GoogleGenerativeAI,
     HarmCategory,
@@ -7,17 +9,18 @@ import {
   const apiKey = "AIzaSyCMyDmamXGSnK6W0wuGXcGicQlBwIFCSsU"; 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-1.5-flash", // the model i am using here is gemini-1.5-flash
   });
   
   const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
-    maxOutputTokens: 8192,
-    responseMimeType: "text/plain",
+    temperature: 1, //for the randomness in output
+    topP: 0.95, //token selection probability
+    topK: 64,//limiting the top probable token
+    maxOutputTokens: 8192, //maximum number of output tokens
+    responseMimeType: "text/plain", 
   };
   
+  //implementing run method
   export async function run(prompt) {
     const chatSession = model.startChat({
       generationConfig,

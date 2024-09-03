@@ -3,6 +3,8 @@ import { run } from "../gemini";
 
 export const Context = createContext();
 
+
+//defining the context for the prompt to glorify the plain text
 const ContextProvider = (props) => {
     const [input, setInput] = useState("");
     const [recentPrompt, setRecentPrompt] = useState("");
@@ -18,6 +20,7 @@ const ContextProvider = (props) => {
         }, 75 * index);
     };
 
+    //new chat state
     const newChat = () => {
         setLoading(false);
         setShowResult(false);

@@ -1,11 +1,11 @@
 import { SET_LOADING_STATUS, GET_ARTICLES, DELETE_ARTICLE } from "../actions/actionType";
-
+//reducer to set loading status get
 export const initState = {
     articles: [],
     loading: false,
 };
 
-
+//logic to set set the state of reducers which is taking action as a parameter
 const articleReducer = (state = initState, action) => {
     switch (action.type) {
         case GET_ARTICLES:
@@ -28,7 +28,7 @@ const articleReducer = (state = initState, action) => {
                         return article.video !== action.payload.video;
                     }
                     return true;
-                }),
+                }), 
             };
 
         default:

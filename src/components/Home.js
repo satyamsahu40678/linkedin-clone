@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 const Home = (props) => {
     const navigate = useNavigate();
-
+    //handling the thing where if there is no user login the home page won't be shown of my linked in
     useEffect(() => {
         if (!props.user) {
             navigate('/');

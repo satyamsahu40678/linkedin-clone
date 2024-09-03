@@ -4,7 +4,7 @@ import { signInAPI } from '../actions';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-
+//just simple logic and navigation through login page
 const Login = (props) => {
     const navigate = useNavigate();
 

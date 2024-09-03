@@ -6,22 +6,28 @@ import { SET_USER, SET_LOADING_STATUS, GET_ARTICLES, DELETE_ARTICLE } from "./ac
 import db from "../firebase";
 import { query, orderBy, onSnapshot } from "firebase/firestore";
 
+//action creators
+//action that will be executed
+//setting the user
 export const setUser = (payload) => ({
     type: SET_USER,
     user: payload,
 });
 
+//setting the loading status
 export const setLoading = (status) => ({
     type: SET_LOADING_STATUS,
     status: status,
 });
 
+//setting the articles to get
 export const getArticles = (payload) => (
     {
         type: GET_ARTICLES,
         payload: payload,
     });
 
+//this is the signInAPI which contains my signing in functionality
 export function signInAPI() {
     return (dispatch) => {
         signInWithPopup(auth, provider)
@@ -37,6 +43,7 @@ export function signInAPI() {
     };
 }
 
+//to get the user payload
 export function getUserAuth() {
     return (dispatch) => {
         auth.onAuthStateChanged(async (user) => {
@@ -47,7 +54,7 @@ export function getUserAuth() {
     }
 }
 
-
+//sign out functionality
 export function signOutAPI() {
     return (dispatch) => {
         auth.signOut().then(() => {
@@ -58,12 +65,12 @@ export function signOutAPI() {
     };
 }
 
-
+//fostion an article on database 
 export function postArticleAPI(payload) {
     return async (dispatch) => {
 
         dispatch(setLoading(true));
-
+        //if the user posting the image
         if (payload.image !== '') {
             const storageRef = ref(getStorage(), `images/${payload.image.name}`);
             const uploadTask = uploadBytesResumable(storageRef, payload.image);
@@ -93,7 +100,7 @@ export function postArticleAPI(payload) {
                 }
             );
         }
-        else if (payload.video) {
+        else if (payload.video) { //if the user posting an video through link
             dispatch(setLoading(true));
             await addDoc(collection(db, "articles"), {
                 actor: {
@@ -112,7 +119,7 @@ export function postArticleAPI(payload) {
     };
 }
 
-
+//whatever that is posted in database that will be fetched 
 export function getArticlesAPI() {
     return (dispatch) => {
         const db = getFirestore();
@@ -121,19 +128,16 @@ export function getArticlesAPI() {
 
         onSnapshot(articlesQuery, (snapshot) => {
             const payload = snapshot.docs.map((doc) => doc.data());
-            // console.log(payload);
-            // Dispatch the payload to the Redux store here if needed
-            // dispatch({ type: 'SET_ARTICLES', payload });
             dispatch(getArticles(payload));
         });
     };
 }
 
-
+//deleting the any article from the database
 export const deleteArticle = (article) => async (dispatch) => {
-    console.log("Article to delete:", article);
-    console.log("Shared Image:", article.sharedImg);
-    console.log("Video:", article.video);
+    // console.log("Article to delete:", article);
+    // console.log("Shared Image:", article.sharedImg);
+    // console.log("Video:", article.video);
 
     const db = getFirestore();
 
